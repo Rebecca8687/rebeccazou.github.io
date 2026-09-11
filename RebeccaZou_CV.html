@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rebecca Zou — Connecting Worlds</title>
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0a;
+    --bg-soft: #141414;
+    --text: #f5f5f5;
+    --text-dim: #888;
+    --text-faint: #555;
+    --accent: #e8a838;
+    --line: #2a2a2a;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans SC', 'Space Grotesk', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  .serif { font-family: 'Noto Serif SC', serif; }
+  .grotesk { font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif; }
+
+  /* ===== 导航 ===== */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ===== Hero ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    position: relative;
+  }
+  .hero-label {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .hero-label::before {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .hero h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(48px, 10vw, 140px);
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero-sub {
+    font-size: clamp(18px, 2.5vw, 28px);
+    font-weight: 300;
+    color: var(--text-dim);
+    max-width: 700px;
+    margin-bottom: 48px;
+    line-height: 1.6;
+  }
+  .hero-sub strong { color: var(--text); font-weight: 500; }
+  .hero-meta {
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--text-faint);
+    letter-spacing: 1px;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 8px; }
+  .hero-meta .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* ===== 通用区块 ===== */
+  section {
+    padding: 100px 48px;
+    border-top: 1px solid var(--line);
+  }
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .section-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 64px;
+    max-width: 800px;
+  }
+
+  /* ===== 旅程时间线 ===== */
+  .journey {
+    position: relative;
+    padding-left: 40px;
+  }
+  .journey::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+  .journey-item {
+    position: relative;
+    margin-bottom: 48px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .journey-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .journey-item::before {
+    content: '';
+    position: absolute;
+    left: -36px;
+    top: 8px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+    border-radius: 50%;
+  }
+  .journey-year {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .journey-city {
+    font-size: 12px;
+    color: var(--text-faint);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .journey-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .journey-org {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+
+  /* ===== 三个维度 ===== */
+  .dimensions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .dimension {
+    background: var(--bg);
+    padding: 48px 32px;
+    transition: background 0.3s;
+  }
+  .dimension:hover { background: var(--bg-soft); }
+  .dim-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 3px;
+    margin-bottom: 24px;
+  }
+  .dim-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .dim-title-en {
+    font-size: 12px;
+    color: var(--text-faint);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .dim-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+  .dim-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .dim-tag {
+    font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+
+  /* ===== 经历详情 ===== */
+  .experience-list { display: flex; flex-direction: column; gap: 0; }
+  .exp-item {
+    border-bottom: 1px solid var(--line);
+    padding: 40px 0;
+    cursor: pointer;
+    transition: padding-left 0.3s;
+  }
+  .exp-item:hover { padding-left: 16px; }
+  .exp-item:first-child { padding-top: 0; }
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .exp-role {
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .exp-company {
+    font-size: 14px;
+    color: var(--text-dim);
+  }
+  .exp-period {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+  .exp-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, padding 0.5s ease;
+    padding-top: 0;
+  }
+  .exp-item.open .exp-details {
+    max-height: 800px;
+    padding-top: 16px;
+  }
+  .exp-details ul {
+    list-style: none;
+    padding-top: 16px;
+  }
+  .exp-details li {
+    font-size: 14px;
+    color: var(--text-dim);
+    padding: 6px 0;
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.7;
+  }
+  .exp-details li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  .exp-toggle {
+    font-size: 12px;
+    color: var(--text-faint);
+    letter-spacing: 1px;
+    margin-top: 8px;
+  }
+
+  /* ===== 技能 ===== */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 48px;
+  }
+  .skill-group h3 {
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .skill-items { display: flex; flex-direction: column; gap: 12px; }
+  .skill-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .skill-name { font-size: 15px; }
+  .skill-level {
+    display: flex;
+    gap: 4px;
+  }
+  .skill-bar {
+    width: 24px;
+    height: 3px;
+    background: var(--line);
+  }
+  .skill-bar.filled { background: var(--accent); }
+  .ai-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .ai-tool {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    padding: 6px 14px;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    transition: all 0.3s;
+  }
+  .ai-tool:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ===== 文化基因 ===== */
+  .culture-section {
+    background: var(--bg-soft);
+  }
+  .culture-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .culture-card {
+    border: 1px solid var(--line);
+    padding: 32px 24px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+  .culture-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+  .culture-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .culture-icon svg { width: 32px; height: 32px; stroke: var(--accent); fill: none; stroke-width: 1.5; }
+  .culture-name {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .culture-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* ===== 给HYSTON的话 ===== */
+  .letter {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .letter-text {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(20px, 3vw, 32px);
+    line-height: 1.8;
+    font-weight: 400;
+    margin-bottom: 32px;
+  }
+  .letter-text .highlight { color: var(--accent); }
+  .letter-sign {
+    font-size: 14px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+  }
+
+  /* ===== 联系方式 ===== */
+  .contact {
+    text-align: center;
+    padding-bottom: 80px;
+  }
+  .contact-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    margin-bottom: 32px;
+  }
+  .contact-items {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .contact-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .contact-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .contact-value {
+    font-size: 16px;
+    color: var(--text);
+  }
+  .contact-value a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  .contact-value a:hover { border-bottom-color: var(--accent); }
+
+  footer {
+    padding: 32px 48px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-faint);
+    letter-spacing: 2px;
+  }
+
+  /* ===== 响应式 ===== */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    section { padding: 60px 24px; }
+    .dimensions { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr; gap: 32px; }
+    .culture-grid { grid-template-columns: repeat(2, 1fr); }
+    .exp-header { flex-direction: column; gap: 8px; }
+    .contact-items { gap: 24px; }
+  }
+  @media (max-width: 500px) {
+    .culture-grid { grid-template-columns: 1fr; }
+    .hero-meta { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== 导航 ===== -->
+<nav>
+  <div class="nav-name">Rebecca Zou</div>
+  <div class="nav-links">
+    <a href="#journey">Journey</a>
+    <a href="#dimensions">Dimensions</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<section class="hero" id="top">
+  <div class="hero-label">Curriculum Vitae · 2026</div>
+  <h1>连接<span class="accent">世界</span>的人<br><span class="grotesk" style="font-size:0.6em;font-weight:300;color:var(--text-dim)">A Connector Between Worlds</span></h1>
+  <p class="hero-sub">
+    17年，五座城市，四个行业。<br>
+    从<strong>帝国理工</strong>的金融工程，到香港的高净值客户顾问；从海外品牌进入中国的桥梁，到帮助数百名学生连接世界名校。<br>
+    ——让不同的世界开始彼此说话。
+  </p>
+  <div class="hero-meta">
+    <span><span class="dot"></span>17 Years Experience</span>
+    <span><span class="dot"></span>Imperial College London</span>
+    <span><span class="dot"></span>China · UK · HK</span>
+    <span><span class="dot"></span>English Working Proficiency</span>
+  </div>
+</section>
+
+<!-- ===== 旅程 ===== -->
+<section id="journey">
+  <div class="section-label">Journey · 旅程</div>
+  <h2 class="section-title">从沈阳到伦敦，从香港到深圳<br>一条不断向外延伸的线</h2>
+  <div class="journey">
+    <div class="journey-item">
+      <div class="journey-year">2004 — 2007</div>
+      <div class="journey-city">Shenyang, China · 中国沈阳</div>
+      <div class="journey-title">辽宁大学 · 工商管理本科</div>
+      <div class="journey-org">Liaoning University — B.A. Business Administration</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2007 — 2008</div>
+      <div class="journey-city">Leicester, UK · 英国莱斯特</div>
+      <div class="journey-title">德蒙福特大学 · 工商管理本科</div>
+      <div class="journey-org">De Montfort University — B.A. Business Administration</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2008 — 2009</div>
+      <div class="journey-city">London, UK · 英国伦敦</div>
+      <div class="journey-title">帝国理工学院 · 风险管理与金融工程硕士</div>
+      <div class="journey-org">Imperial College London — M.Sc. Risk Management & Financial Engineering</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2009 — 2010</div>
+      <div class="journey-city">China · 中国</div>
+      <div class="journey-title">新东方前途出国 · 留学顾问</div>
+      <div class="journey-org">New Oriental Vision Overseas — Study Abroad Consultant</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2010 — 2014</div>
+      <div class="journey-city">Hong Kong · 中国香港</div>
+      <div class="journey-title">利澳投资有限公司 · 理财顾问</div>
+      <div class="journey-org">Leonardo Investment (HK) — Wealth Management Advisor</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2014 — 2020</div>
+      <div class="journey-city">Shenzhen, China · 中国深圳</div>
+      <div class="journey-title">深圳市蒂诺斯贸易有限公司 · 海外业务经理</div>
+      <div class="journey-org">Tinos Trading — Overseas Business Manager</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2020 — 2026</div>
+      <div class="journey-city">Remote / China · 远程/中国</div>
+      <div class="journey-title">自由商业顾问 · Freelance Business Consultant</div>
+      <div class="journey-org">Independent Consultant — Cross-border Business & Education</div>
+    </div>
+    <div class="journey-item">
+      <div class="journey-year">2026 — Present</div>
+      <div class="journey-city">Shenzhen, China · 中国深圳</div>
+      <div class="journey-title">美藤保罗留学服务有限公司 · 高级顾问</div>
+      <div class="journey-org">Studying Abroad in America — Senior Consultant</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 三个维度 ===== -->
+<section id="dimensions">
+  <div class="section-label">Dimensions · 三个维度</div>
+  <h2 class="section-title">我不是在换工作<br>我是在不同的世界之间搭桥</h2>
+  <div class="dimensions">
+    <div class="dimension">
+      <div class="dim-num">01</div>
+      <div class="dim-title">跨文化连接</div>
+      <div class="dim-title-en">Cross-Cultural Connector</div>
+      <p class="dim-desc">在英国生活三年，从本科到硕士。后来把海外品牌带进中国，把中国学生送进世界名校。语言和文化不是障碍，是我的工作语言。</p>
+      <div class="dim-tags">
+        <span class="dim-tag">中英文化融合</span>
+        <span class="dim-tag">帝国理工硕士</span>
+        <span class="dim-tag">英语工作语言</span>
+        <span class="dim-tag">海外品牌对接</span>
+      </div>
+    </div>
+    <div class="dimension">
+      <div class="dim-num">02</div>
+      <div class="dim-title">商业连接</div>
+      <div class="dim-title-en">Business Connector</div>
+      <p class="dim-desc">十年高净值客户服务，从香港的理财顾问到深圳的海外业务经理。谈得成合同，管得住团队，交付得了结果。</p>
+      <div class="dim-tags">
+        <span class="dim-tag">高净值客户</span>
+        <span class="dim-tag">商务洽谈</span>
+        <span class="dim-tag">团队管理</span>
+        <span class="dim-tag">业绩达成</span>
+      </div>
+    </div>
+    <div class="dimension">
+      <div class="dim-num">03</div>
+      <div class="dim-title">文化连接</div>
+      <div class="dim-title-en">Culture Connector</div>
+      <p class="dim-desc">教育是我的底色，运动是我的呼吸。白天帮学生规划人生，在击剑和马术里学习专注与沟通。用AI工具做创意方案，相信技术和身体从不矛盾。</p>
+      <div class="dim-tags">
+        <span class="dim-tag">教育咨询</span>
+        <span class="dim-tag">击剑 / 马术</span>
+        <span class="dim-tag">AI工具玩家</span>
+        <span class="dim-tag">跨文化沟通</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 经历详情 ===== -->
+<section id="experience">
+  <div class="section-label">Experience · 经历详情</div>
+  <h2 class="section-title">点击展开每一段经历</h2>
+  <div class="experience-list">
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div>
+          <div class="exp-role">高级顾问 · Senior Consultant</div>
+          <div class="exp-company">美藤保罗留学服务有限公司 · 2026 — Present</div>
+        </div>
+        <div class="exp-period">2026 — Now</div>
+      </div>
+      <div class="exp-toggle">点击展开 / Click to expand</div>
+      <div class="exp-details">
+        <ul>
+          <li>为学生制定个性化留学方案，涵盖院校精选、专业定位、背景提升规划与文书指导</li>
+          <li>参与香港国际学校项目的筹划与落地，协调跨境资源，确保项目顺利推进</li>
+          <li>把控留学申请全流程与关键节点，提升录取效率与客户满意度</li>
+          <li>负责公司线上推广运营与线下活动策划，提升品牌知名度与转化率</li>
+          <li>运用AI工具（Kimi、DeepSeek、Gamma等）制作数字化留学规划方案，提升服务专业度</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div>
+          <div class="exp-role">自由商业顾问 · Freelance Business Consultant</div>
+          <div class="exp-company">Independent Consultant · 2020 — 2026</div>
+        </div>
+        <div class="exp-period">2020 — 2026</div>
+      </div>
+      <div class="exp-toggle">点击展开 / Click to expand</div>
+      <div class="exp-details">
+        <ul>
+          <li>为企业提供商业咨询服务，涵盖市场进入策略、合作伙伴对接与项目管理</li>
+          <li>为高净值客户提供海外教育规划与资产配置咨询</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div>
+          <div class="exp-role">海外业务经理 · Overseas Business Manager</div>
+          <div class="exp-company">深圳市蒂诺斯贸易有限公司 · 2014 — 2020</div>
+        </div>
+        <div class="exp-period">2014 — 2020</div>
+      </div>
+      <div class="exp-toggle">点击展开 / Click to expand</div>
+      <div class="exp-details">
+        <ul>
+          <li>主导多个海外品牌进入中国市场的全程管理，负责商务洽谈与合同签订</li>
+          <li>建立并维护与海外品牌方的长期战略合作关系，作为中美双方沟通的核心桥梁</li>
+          <li>提供跨文化沟通支持，确保中外团队高效协作，项目按时落地</li>
+          <li>主导策划并执行线下推广活动，协调各方资源，支持公司战略发展</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div>
+          <div class="exp-role">理财顾问 · Wealth Management Advisor</div>
+          <div class="exp-company">利澳投资有限公司（香港）· 2010 — 2014</div>
+        </div>
+        <div class="exp-period">2010 — 2014</div>
+      </div>
+      <div class="exp-toggle">点击展开 / Click to expand</div>
+      <div class="exp-details">
+        <ul>
+          <li>为高净值客户提供个性化海外资产配置方案，深入挖掘客户财务需求</li>
+          <li>根据客户风险偏好与财务状况，定制理财产品与资产配置组合</li>
+          <li>维护长期客户关系，定期举办理财知识培训与讲座，建立稳定客户基础</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-header">
+        <div>
+          <div class="exp-role">留学顾问 · Study Abroad Consultant</div>
+          <div class="exp-company">新东方前途出国 · 2009 — 2010</div>
+        </div>
+        <div class="exp-period">2009 — 2010</div>
+      </div>
+      <div class="exp-toggle">点击展开 / Click to expand</div>
+      <div class="exp-details">
+        <ul>
+          <li>为学生提供个性化英国本科申请方案，包括选校定位、背景提升建议及文书素材挖掘</li>
+          <li>跟进申请全流程，与学生、家长及海外院校保持高效沟通</li>
+          <li>成功帮助多位学生获得世界名校录取通知书</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== 技能 ===== -->
+<section id="skills">
+  <div class="section-label">Skills · 技能工具箱</div>
+  <h2 class="section-title">不只是会做事<br>是知道用什么工具把事做好</h2>
+  <div class="skills-grid">
+    <div class="skill-group">
+      <h3>Languages · 语言</h3>
+      <div class="skill-items">
+        <div class="skill-item">
+          <span class="skill-name">中文 · 母语</span>
+          <div class="skill-level">
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar filled"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">English · 英语（工作语言）</span>
+          <div class="skill-level">
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">Français · 法语（入门）</span>
+          <div class="skill-level">
+            <div class="skill-bar filled"></div><div class="skill-bar"></div>
+            <div class="skill-bar"></div><div class="skill-bar"></div>
+            <div class="skill-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>Capabilities · 核心能力</h3>
+      <div class="skill-items">
+        <div class="skill-item">
+          <span class="skill-name">跨文化沟通与谈判</span>
+          <div class="skill-level">
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar filled"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">客户关系管理</span>
+          <div class="skill-level">
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar filled"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">项目管理与执行</span>
+          <div class="skill-level">
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <span class="skill-name">活动策划与落地</span>
+          <div class="skill-level">
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar filled"></div><div class="skill-bar filled"></div>
+            <div class="skill-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top: 48px;">
+    <h3 style="font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-family:'Space Grotesk',sans-serif;">AI Toolkit · AI 工具栈</h3>
+    <div class="ai-tools">
+      <span class="ai-tool">Kimi</span>
+      <span class="ai-tool">DeepSeek</span>
+      <span class="ai-tool">ChatGPT</span>
+      <span class="ai-tool">Mind Mapping</span>
+      <span class="ai-tool">AI Office Suite</span>
+    </div>
+    <p style="margin-top:16px;font-size:13px;color:var(--text-dim);">擅长用AI辅助高效管理、文档制作与数字化方案呈现。</p>
+  </div>
+</section>
+
+<!-- ===== 文化基因 ===== -->
+<section class="culture-section" id="culture">
+  <div class="section-label">DNA · 文化基因</div>
+  <h2 class="section-title">工作之外的我<br>才是完整的我</h2>
+  <div class="culture-grid">
+    <div class="culture-card">
+      <div class="culture-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="culture-name">旅行 · Travel</div>
+      <div class="culture-desc">用脚步丈量世界，在陌生城市里学会快速适应与连接</div>
+    </div>
+    <div class="culture-card">
+      <div class="culture-icon">
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div class="culture-name">DIY · 手工创作</div>
+      <div class="culture-desc">用双手把想法变成实物，在动手的过程中找到解决问题的乐趣</div>
+    </div>
+    <div class="culture-card">
+      <div class="culture-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 20l2-8 4-2 4 2 2 4h2"/><path d="M6 12l2-6h4l2 4"/><circle cx="18" cy="6" r="2"/></svg>
+      </div>
+      <div class="culture-name">马术 · Equestrian</div>
+      <div class="culture-desc">与另一个生命建立信任，在沟通与默契中达成共同目标</div>
+    </div>
+    <div class="culture-card">
+      <div class="culture-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 3l7 7-4 4-7-7z"/><path d="M10 7l-7 7 4 4 7-7"/><path d="M3 21l3-3"/></svg>
+      </div>
+      <div class="culture-name">击剑 · Fencing</div>
+      <div class="culture-desc">距离、时机与判断——在瞬息万变中做出最优决策</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 给HYSTON的话 ===== -->
+<section id="letter">
+  <div class="letter">
+    <div class="section-label" style="text-align:center;">To HYSTON</div>
+    <p class="letter-text">
+      你们说要找的不是"坐办公室完成任务"的人，<br>
+      而是面对变化不会卡住、遇到人能聊明白、<br>
+      遇到事能接得住的人。<br><br>
+      我过去十七年一直在做这件事——<br>
+      <span class="highlight">在不同的世界之间搭桥</span>。<br>
+      从伦敦到香港，从金融到教育，从商务到艺术。<br><br>
+      如果工作不应该只有一个城市的坐标，<br>
+      那我已经准备好了。
+    </p>
+    <div class="letter-sign">— Rebecca Zou, 2026</div>
+  </div>
+</section>
+
+<!-- ===== 联系方式 ===== -->
+<section class="contact" id="contact">
+  <div class="section-label" style="text-align:center;">Contact · 联系</div>
+  <h2 class="contact-title">Let's build something together.</h2>
+  <div class="contact-items">
+    <div class="contact-item">
+      <span class="contact-label">Email</span>
+      <span class="contact-value"><a href="mailto:xiaorong.zou08@gmail.com">xiaorong.zou08@gmail.com</a></span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">Phone</span>
+      <span class="contact-value">13603077769</span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">Location</span>
+      <span class="contact-value">Shenzhen / Remote</span>
+    </div>
+    <div class="contact-item">
+      <span class="contact-label">WeChat</span>
+      <span class="contact-value">13603077769</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Rebecca Zou · Curriculum Vitae · 2026 · Designed for HYSTON
+</footer>
+
+<script>
+  // 滚动揭示动画
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.journey-item').forEach(item => observer.observe(item));
+
+  // 经历展开/收起
+  document.querySelectorAll('.exp-item').forEach(item => {
+    item.addEventListener('click', function() {
+      this.classList.toggle('open');
+      const toggle = this.querySelector('.exp-toggle');
+      if (this.classList.contains('open')) {
+        toggle.textContent = '点击收起 / Click to collapse';
+      } else {
+        toggle.textContent = '点击展开 / Click to expand';
+      }
+    });
+  });
+
+  // 平滑滚动
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>
